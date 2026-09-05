@@ -20,3 +20,11 @@ npm run dev
 
 - `src/FscQuiz.jsx` — 문제 데이터와 퀴즈 UI 전체
 - `src/main.jsx` — 진입점
+
+## 배포
+
+`main` 브랜치에 푸시하면 GitHub Actions(`.github/workflows/deploy.yml`)가 빌드 후 GitHub Pages로 배포한다.
+
+최초 1회 설정: 저장소 **Settings → Pages → Build and deployment → Source** 를 **GitHub Actions** 로 변경.
+
+배포 주소: https://seosj1225.github.io/SF-Financial_Services_Cloud/
