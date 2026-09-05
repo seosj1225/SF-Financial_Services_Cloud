@@ -5,6 +5,21 @@ const QUESTIONS = [{"i": 1, "q": "Which of the following statements are correct 
 const KEY = "fsc-ap-study-v2";
 const OLD_KEY = "fsc-ap-study-v1";
 
+// 호스트가 window.storage를 주지 않는 환경(일반 웹)에서는 localStorage로 대체한다.
+// 없는 키는 throw 해야 아래의 v1 마이그레이션 경로가 그대로 동작한다.
+const store = {
+  async get(k) {
+    if (typeof window !== "undefined" && window.storage) return window.storage.get(k);
+    const value = localStorage.getItem(k);
+    if (value === null) throw new Error("no value for " + k);
+    return { value };
+  },
+  set(k, v) {
+    if (typeof window !== "undefined" && window.storage) return window.storage.set(k, v);
+    localStorage.setItem(k, v);
+  },
+};
+
 const CSS = `
 .fsc {
   --bg:#E7EBE5; --paper:#FBFCF9; --ink:#15201A; --soft:#5C6B62;
@@ -243,12 +258,12 @@ export default function App() {
     let alive = true;
     (async () => {
       try {
-        const r = await window.storage.get(KEY);
+        const r = await store.get(KEY);
         const d = JSON.parse(r.value);
         if (alive && d) { setStars(d.stars || []); setCounts(d.counts || {}); setExams(d.exams || []); }
       } catch (e) {
         try { // v1에서 옮겨오기
-          const r = await window.storage.get(OLD_KEY);
+          const r = await store.get(OLD_KEY);
           const d = JSON.parse(r.value);
           if (alive && d) {
             const c = {};
@@ -264,7 +279,7 @@ export default function App() {
 
   useEffect(() => {
     if (!ready) return;
-    try { window.storage.set(KEY, JSON.stringify({ stars, counts, exams })); } catch (e) {}
+    try { store.set(KEY, JSON.stringify({ stars, counts, exams })); } catch (e) {}
   }, [ready, stars, counts, exams]);
 
   const toggleStar = useCallback((id) => {
