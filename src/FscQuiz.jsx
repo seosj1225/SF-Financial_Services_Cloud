@@ -314,7 +314,7 @@ const QUESTIONS = [
       "C. Select Use Flex Card from the node Display tab to show the node in a Flex Card",
       "D. Reference the Flex Card in the Display properties of the custom ARC relationship graph",
     ],
-    a: ["B"],
+    a: ["D"],
   },
   {
     i: 29,
