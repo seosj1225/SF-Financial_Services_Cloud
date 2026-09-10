@@ -2127,6 +2127,32 @@ const byId = {};
 QUESTIONS.forEach((q) => {
   byId[q.i] = q;
 });
+/* 문항별 보기 순서를 무작위로 섞고 A·B·C… 라벨을 다시 매긴다.
+   내부 정답/기록은 원래 letter 그대로 두어 과거 기록과 호환된다. */
+const makeOrders = () => {
+  const o = {};
+  QUESTIONS.forEach((q) => {
+    o[q.i] = shuffle(q.o.map((raw) => raw.slice(0, 1)));
+  });
+  return o;
+};
+const optView = (q, orders) => {
+  const text = {};
+  q.o.forEach((raw) => {
+    text[raw.slice(0, 1)] = raw.slice(3);
+  });
+  const ord = orders[q.i] || q.o.map((raw) => raw.slice(0, 1));
+  return ord.map((orig, i) => ({
+    orig,
+    L: String.fromCharCode(65 + i),
+    text: text[orig],
+  }));
+};
+const dispLetters = (q, orders, letters) =>
+  optView(q, orders)
+    .filter((o) => letters.includes(o.orig))
+    .map((o) => o.L);
+
 const fmtTime = (s) =>
   `${Math.floor(s / 60)}분 ${String(s % 60).padStart(2, "0")}초`;
 const fmtDate = (ms) => {
@@ -2142,7 +2168,7 @@ const cellClass = (c) => {
   return "";
 };
 
-function Question({ q, sel, onToggle, locked, tally }) {
+function Question({ q, opts, sel, onToggle, locked, tally }) {
   const n = q.a.length;
   return (
     <>
@@ -2153,11 +2179,9 @@ function Question({ q, sel, onToggle, locked, tally }) {
       <div className="qtext">{q.q}</div>
       {/* <div className="hint">{n > 1 ? `${n}개 선택` : "1개 선택"}</div> */}
       <div className="opts">
-        {q.o.map((raw) => {
-          const L = raw.slice(0, 1);
-          const text = raw.slice(3);
-          const picked = sel.includes(L);
-          const correct = q.a.includes(L);
+        {opts.map(({ orig, L, text }) => {
+          const picked = sel.includes(orig);
+          const correct = q.a.includes(orig);
           let cls = "opt";
           if (locked) {
             if (correct) cls += " ok";
@@ -2165,10 +2189,10 @@ function Question({ q, sel, onToggle, locked, tally }) {
           } else if (picked) cls += " sel";
           return (
             <button
-              key={L}
+              key={orig}
               className={cls}
               disabled={locked}
-              onClick={() => onToggle(L)}
+              onClick={() => onToggle(orig)}
             >
               <span className="ltr">{L}</span>
               <span className="txt">{text}</span>
@@ -2205,6 +2229,7 @@ export default function App() {
   const [examSize, setExamSize] = useState(QUESTIONS.length);
   const [showNav, setShowNav] = useState(false);
   const [dialog, setDialog] = useState(null);
+  const [orders, setOrders] = useState(makeOrders);
 
   /* ---------- storage --------- */
   useEffect(() => {
@@ -2262,12 +2287,14 @@ export default function App() {
 
   /* ---------- session start ---------- */
   const startPractice = (ids, at = 0) => {
+    setOrders(makeOrders());
     setPool(ids);
     setIdx(at);
     setWork({});
     setView("practice");
   };
   const startExam = (n) => {
+    setOrders(makeOrders());
     setExamIds(shuffle(QUESTIONS.map((q) => q.i)).slice(0, n));
     setExamAns({});
     setEIdx(0);
@@ -2412,15 +2439,15 @@ export default function App() {
       }
       const q = view === "practice" ? curQ : view === "exam" ? exQ : null;
       if (!q) return;
-      const letters = q.o.map((o) => o.slice(0, 1));
+      const opts = optView(q, orders);
       const li = /^[a-fA-F]$/.test(k)
-        ? letters.indexOf(k.toUpperCase())
+        ? opts.findIndex((o) => o.L === k.toUpperCase())
         : /^[1-6]$/.test(k)
           ? Number(k) - 1
           : -1;
-      if (li >= 0 && letters[li]) {
+      if (li >= 0 && opts[li]) {
         e.preventDefault();
-        (view === "practice" ? pToggle : eToggle)(letters[li]);
+        (view === "practice" ? pToggle : eToggle)(opts[li].orig);
         return;
       }
       if (k === "s" || k === "S") {
@@ -2722,6 +2749,7 @@ export default function App() {
             <>
               <Question
                 q={curQ}
+                opts={optView(curQ, orders)}
                 sel={cur.sel}
                 onToggle={pToggle}
                 locked={cur.locked}
@@ -2734,7 +2762,7 @@ export default function App() {
                     {c.x > 0 && ` · 이 문제 누적 ${c.x}번 틀림`}
                   </span>
                   <span>
-                    정답 <b>{curQ.a.join(" ")}</b>
+                    정답 <b>{dispLetters(curQ, orders, curQ.a).join(" ")}</b>
                   </span>
                 </div>
               )}
@@ -2813,6 +2841,7 @@ export default function App() {
         <div className="col narrow">
           <Question
             q={exQ}
+            opts={optView(exQ, orders)}
             sel={exSel}
             onToggle={eToggle}
             locked={false}
@@ -2959,25 +2988,27 @@ export default function App() {
                 <StarBtn id={id} />
               </div>
               <div className="rq">{q.q}</div>
-              {q.o.map((raw) => {
-                const L = raw.slice(0, 1);
-                const isA = q.a.includes(L),
-                  isM = mine.includes(L);
+              {optView(q, orders).map(({ orig, L, text }) => {
+                const isA = q.a.includes(orig),
+                  isM = mine.includes(orig);
                 if (!isA && !isM) return null;
                 return (
-                  <div key={L} className="ansline">
+                  <div key={orig} className="ansline">
                     <em
                       style={{ color: isA ? "var(--right)" : "var(--wrong)" }}
                     >
                       {isA ? "✓" : "✕"} {L}.
                     </em>{" "}
-                    {raw.slice(3)}
+                    {text}
                   </div>
                 );
               })}
               <div className="ansline" style={{ marginTop: 8 }}>
-                내 답 <em>{mine.length ? mine.join(" ") : "없음"}</em> · 정답{" "}
-                <em>{q.a.join(" ")}</em>
+                내 답{" "}
+                <em>
+                  {mine.length ? dispLetters(q, orders, mine).join(" ") : "없음"}
+                </em>{" "}
+                · 정답 <em>{dispLetters(q, orders, q.a).join(" ")}</em>
               </div>
             </div>
           );
