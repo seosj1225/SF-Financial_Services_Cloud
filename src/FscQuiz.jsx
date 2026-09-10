@@ -2151,7 +2151,7 @@ function Question({ q, sel, onToggle, locked, tally }) {
         {tally > 0 && <span className="tally"> · 지금까지 {tally}번 틀림</span>}
       </div>
       <div className="qtext">{q.q}</div>
-      <div className="hint">{n > 1 ? `${n}개 선택` : "1개 선택"}</div>
+      {/* <div className="hint">{n > 1 ? `${n}개 선택` : "1개 선택"}</div> */}
       <div className="opts">
         {q.o.map((raw) => {
           const L = raw.slice(0, 1);
