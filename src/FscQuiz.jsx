@@ -1188,6 +1188,17 @@ const QUESTIONS = [
     a: ["A"],
   },
   {
+    i: 106.5,
+    q: "Rachel Addams belongs to two households:\n1. The Addams household where Rachel lives with her spouse, Nigel Addams. Rachel is the client and, as such, is listed as the primary member of that household. This household is also Rachel's primary group.\n2. The Symonds household. This household belongs to Rachel's parents, but Rachel manages their finances. Rachel is considered the beneficiary of this household.\nIn addition, Rachel's household has a related account, the Addams Charitable Trust, and a related contact, Ivan M. Kohl, attorney at law.\nWhat should be the relationships between the parties when the Financial Services Cloud consultant sets up Rachel's person account?",
+    o: [
+      "A. Primary Group Household - Symonds Household\nPrimary Member - Neil Symonds\nTrustee - Addams Charitable Trust\nHousehold - Addams Household\nPrimary Member - Rachel Addams\nSpouse - Nigel Addams\nBeneficiary - Rachel Addams\nRelated Accounts - Addams Charitable Trust\nRelated Contacts - Ivan M. Kohl",
+      "B. Primary Group Household - Symonds Household\nPrimary Member - Neil Symonds\nTrustee - Addams Charitable Trust\nHousehold - Addams Household\nPrimary Member - Nigel Addams\nSpouse - Rachel Addams\nBeneficiary - Rachel Addams\nRelated Accounts - Addams Charitable Trust\nRelated Contacts - Ivan M. Kohl",
+      "C. Primary Group Household - Addams Household\nPrimary Member - Rachel Addams\nSpouse - Nigel Addams\nTrustee - Addams Charitable Trust\nHousehold - Symonds Household\nPrimary Member - Neil Symonds\nBeneficiary - Rachel Addams\nRelated Accounts - Ivan M. Kohl\nRelated Contacts - Addams Charitable Trust",
+      "D. Primary Group Household - Addams Household\nPrimary Member - Rachel Addams\nSpouse - Nigel Addams\nTrustee - Addams Charitable Trust\nHousehold - Symonds Household\nPrimary Member - Neil Symonds\nBeneficiary - Rachel Addams\nRelated Accounts - Addams Charitable Trust\nRelated Contacts - Ivan M. Kohl",
+    ],
+    a: ["D"],
+  },
+  {
     i: 107,
     q: "Financial Services Cloud (FSC) contains a number of custom objects to model a client's financial information, and each object can be configured to appear as tabs in your org. For example, if a consultant wanted to create a financial goal for a customer, they could use the Financial Goal object in FSC.\nWhat are three objects in FSC?",
     o: [
