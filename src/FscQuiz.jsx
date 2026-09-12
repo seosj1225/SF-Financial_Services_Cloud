@@ -1249,10 +1249,10 @@ const QUESTIONS = [
     i: 112,
     q: "The system administrator team at a retail consumer bank just received data migration instructions and guidance on Data Loader from their Salesforce architect to upgrade the existing Service Cloud org to a Financial Services Cloud (FSC) org.\nIn what order should the Salesforce objects be uploaded during an FSC data migration?",
     o: [
-      "A. 1. Accounts and contacts2. Financial accounts3. Account groups and households",
-      "B. 1. Financial accounts2. Accounts and contacts3, Account groups",
-      "C. 1. Accounts and contacts2. Households3. Financial accounts",
-      "D. 1. Households2.Financial accounts3. Person accounts",
+      "A. 1. Accounts and contacts\n2. Financial accounts\n3. Account groups and households",
+      "B. 1. Financial accounts\n2. Accounts and contacts\n3. Account groups",
+      "C. 1. Accounts and contacts\n2. Households\n3. Financial accounts",
+      "D. 1. Households\n2. Financial accounts\n3. Person accounts",
     ],
     a: ["A"],
   },
@@ -2047,7 +2047,7 @@ h2.sec{font-family:var(--serif);font-size:20px;font-weight:600;margin:42px 0 2px
 .opt:hover{border-color:#9AA79D;}
 .opt .ltr{flex:0 0 40px;display:flex;align-items:center;justify-content:center;
   border-right:1px solid var(--rule);color:var(--soft);font-size:13px;font-weight:600;}
-.opt .txt{padding:12px 14px;flex:1;font-size:14.5px;line-height:1.5;}
+.opt .txt{padding:12px 14px;flex:1;font-size:14.5px;line-height:1.5;white-space:pre-wrap;}
 .opt .mk{flex:0 0 34px;display:flex;align-items:center;justify-content:center;font-size:14px;}
 .opt.sel{border-color:var(--deep);background:#EAF0EB;}
 .opt.sel .ltr{border-color:#A9C6B4;color:var(--deep);}
