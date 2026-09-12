@@ -2177,7 +2177,7 @@ function Question({ q, opts, sel, onToggle, locked, tally }) {
         {tally > 0 && <span className="tally"> · 지금까지 {tally}번 틀림</span>}
       </div>
       <div className="qtext">{q.q}</div>
-      {/* <div className="hint">{n > 1 ? `${n}개 선택` : "1개 선택"}</div> */}
+      <div className="hint">{n > 1 ? `${n}개 선택` : "1개 선택"}</div>
       <div className="opts">
         {opts.map(({ orig, L, text }) => {
           const picked = sel.includes(orig);
